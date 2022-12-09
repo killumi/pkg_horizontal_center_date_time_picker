@@ -28,6 +28,8 @@ class DateItemWidget extends StatelessWidget {
   final Color? normalTextColor;
   final Color? selectedTextColor;
   final Color? disabledTextColor;
+  final double? radius;
+  final double? itemMargin;
 
   final List<DateItem> dateItemComponentList;
 
@@ -47,6 +49,8 @@ class DateItemWidget extends StatelessWidget {
     this.disabledTextColor,
     this.monthFontSize,
     this.dayFontSize,
+    this.radius = 0,
+    this.itemMargin = 0,
     this.weekDayFontSize,
   }) : assert(dateItemComponentList.isNotEmpty,
             'dateItemComponentList cannot be empty');
@@ -54,44 +58,53 @@ class DateItemWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Card(
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.zero),
       margin: EdgeInsets.all(0),
-      child: Container(
-        width: width + padding,
+      elevation: 0,
+      child: SizedBox(
+        width: width,
         height: height,
-        padding: EdgeInsets.only(left: padding / 2, right: padding / 2),
-        color: _getContainerColorByState(dateItemState),
-        alignment: Alignment.center,
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children:
-              List<Widget>.generate(this.dateItemComponentList.length, (index) {
-            switch (this.dateItemComponentList[index]) {
-              case DateItem.WeekDay:
-                return Text(DateFormat.E(this.locale).format(this.dateTime),
+        child: Container(
+          height: height,
+          margin: EdgeInsets.symmetric(horizontal: itemMargin ?? 0),
+          decoration: BoxDecoration(
+            color: _getContainerColorByState(dateItemState),
+            borderRadius: BorderRadius.circular(radius ?? 0),
+          ),
+          // padding: EdgeInsets.only(left: padding / 2, right: padding / 2),
+          alignment: Alignment.center,
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: List<Widget>.generate(this.dateItemComponentList.length,
+                (index) {
+              switch (this.dateItemComponentList[index]) {
+                case DateItem.WeekDay:
+                  return Text(DateFormat.E(this.locale).format(this.dateTime),
+                      style: TextStyle(
+                          color: _getTextColorByState(dateItemState),
+                          fontSize: this.weekDayFontSize,
+                          fontWeight: _getTextWeightByState(dateItemState)));
+                case DateItem.Day:
+                  return Text(
+                    DateFormat.d().format(this.dateTime),
                     style: TextStyle(
                         color: _getTextColorByState(dateItemState),
-                        fontSize: this.weekDayFontSize,
-                        fontWeight: _getTextWeightByState(dateItemState)));
-              case DateItem.Day:
-                return Text(
-                  DateFormat.d().format(this.dateTime),
-                  style: TextStyle(
-                      color: _getTextColorByState(dateItemState),
-                      fontSize: this.dayFontSize,
-                      fontWeight: _getTextWeightByState(dateItemState)),
-                );
-              case DateItem.Month:
-                return Text(
-                  DateFormat.MMM(this.locale).format(this.dateTime),
-                  style: TextStyle(
-                      color: _getTextColorByState(dateItemState),
-                      fontSize: this.monthFontSize,
-                      fontWeight: _getTextWeightByState(dateItemState)),
-                );
-              default:
-                return Container();
-            }
-          }),
+                        fontSize: this.dayFontSize,
+                        fontWeight: _getTextWeightByState(dateItemState)),
+                  );
+                case DateItem.Month:
+                  return Text(
+                    DateFormat.MMM(this.locale).format(this.dateTime),
+                    style: TextStyle(
+                        color: _getTextColorByState(dateItemState),
+                        fontSize: this.monthFontSize,
+                        fontWeight: _getTextWeightByState(dateItemState)),
+                  );
+                default:
+                  return Container();
+              }
+            }),
+          ),
         ),
       ),
     );

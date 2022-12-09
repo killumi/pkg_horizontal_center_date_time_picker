@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:horizontal_center_date_picker/datepicker_controller.dart';
 import 'package:horizontal_center_date_picker/horizontal_date_picker.dart';
+import 'package:horizontal_center_date_picker/date_item.dart';
 
 void main() => runApp(MyApp());
 
@@ -33,18 +34,39 @@ class _TestPageState extends State<TestPage> {
     DateTime endDate = now.add(Duration(days: 7));
     print('startDate = $startDate ; endDate = $endDate');
     return Container(
-      color: Colors.grey,
+      color: Colors.white,
       alignment: Alignment.center,
-      child: HorizontalDatePickerWidget(
-        locale: 'ja_JP',
-        startDate: startDate,
-        endDate: endDate,
-        selectedDate: now,
-        widgetWidth: MediaQuery.of(context).size.width,
-        datePickerController: _datePickerController,
-        onValueSelected: (date) {
-          print('selected = ${date.toIso8601String()}');
-        },
+      child: Row(
+        children: [
+          Expanded(
+            child: Container(
+              height: 40,
+              color: Colors.red,
+            ),
+          ),
+          HorizontalDatePickerWidget(
+            locale: 'ja_JP',
+            startDate: startDate,
+            dateItemComponentList: [DateItem.Day],
+            endDate: endDate,
+            selectedDate: now,
+            itemMargin: 6,
+            width: 42,
+            height: 30,
+            widgetWidth: 294,
+            datePickerController: _datePickerController,
+            radius: 10,
+            onValueSelected: (date) {
+              print('selected = ${date.toIso8601String()}');
+            },
+          ),
+          Expanded(
+            child: Container(
+              height: 40,
+              color: Colors.red,
+            ),
+          ),
+        ],
       ),
     );
   }

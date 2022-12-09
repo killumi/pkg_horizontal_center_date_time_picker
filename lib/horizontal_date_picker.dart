@@ -67,6 +67,11 @@ class HorizontalDatePickerWidget extends StatefulWidget {
 
   ///text color of a disabled date(date that out of the range) item
   final Color disabledTextColor;
+  // SelectedBorderRadius
+  final double? radius;
+
+  // Left and Right item margin
+  final double? itemMargin;
 
   ///Date item display setting
   ///default set as month, day, day of week, from top to bottom
@@ -94,6 +99,8 @@ class HorizontalDatePickerWidget extends StatefulWidget {
     String? locale,
     this.width = 60,
     this.height = 80,
+    this.radius = 0,
+    this.itemMargin = 0,
     this.onValueSelected,
     this.normalColor = Colors.white,
     this.selectedColor = Colors.black,
@@ -149,48 +156,53 @@ class _HorizontalDatePickerWidgetState
     return Container(
       height: widget.height,
       width: widget.widgetWidth,
-      child: ListView.builder(
-        scrollDirection: Axis.horizontal,
-        itemCount: _itemCount,
-        controller: _scrollController,
-        itemBuilder: (context, index) {
-          var dateTime = widget.datePickerController.realStartDate
-                  ?.add(Duration(days: index)) ??
-              widget.startDate;
-          DateItemState dateItemState = _getDateTimeState(dateTime);
+      child: Center(
+        child: ListView.builder(
+          scrollDirection: Axis.horizontal,
+          itemCount: _itemCount,
+          controller: _scrollController,
+          shrinkWrap: true,
+          itemBuilder: (context, index) {
+            var dateTime = widget.datePickerController.realStartDate
+                    ?.add(Duration(days: index)) ??
+                widget.startDate;
+            DateItemState dateItemState = _getDateTimeState(dateTime);
 
-          return GestureDetector(
-            onTap: () {
-              if (dateItemState != DateItemState.DISABLED) {
-                widget.datePickerController.selectedDate = dateTime;
-                if (widget.onValueSelected != null) {
-                  widget.onValueSelected!(dateTime);
+            return GestureDetector(
+              onTap: () {
+                if (dateItemState != DateItemState.DISABLED) {
+                  widget.datePickerController.selectedDate = dateTime;
+                  if (widget.onValueSelected != null) {
+                    widget.onValueSelected!(dateTime);
+                  }
+                  setState(() {
+                    widget.datePickerController.scrollToSelectedItem();
+                  });
                 }
-                setState(() {
-                  widget.datePickerController.scrollToSelectedItem();
-                });
-              }
-            },
-            child: DateItemWidget(
-              locale: widget.locale,
-              dateTime: dateTime,
-              padding: _padding,
-              width: widget.width,
-              height: widget.height,
-              dateItemState: dateItemState,
-              dayFontSize: widget.dayFontSize,
-              monthFontSize: widget.monthFontSize,
-              weekDayFontSize: widget.weekDayFontSize,
-              normalColor: widget.normalColor,
-              selectedColor: widget.selectedColor,
-              disabledColor: widget.disabledColor,
-              normalTextColor: widget.normalTextColor,
-              selectedTextColor: widget.selectedTextColor,
-              disabledTextColor: widget.disabledTextColor,
-              dateItemComponentList: widget.dateItemComponentList,
-            ),
-          );
-        },
+              },
+              child: DateItemWidget(
+                locale: widget.locale,
+                dateTime: dateTime,
+                padding: _padding,
+                width: widget.width,
+                height: widget.height,
+                dateItemState: dateItemState,
+                dayFontSize: widget.dayFontSize,
+                monthFontSize: widget.monthFontSize,
+                weekDayFontSize: widget.weekDayFontSize,
+                normalColor: widget.normalColor,
+                selectedColor: widget.selectedColor,
+                disabledColor: widget.disabledColor,
+                normalTextColor: widget.normalTextColor,
+                selectedTextColor: widget.selectedTextColor,
+                disabledTextColor: widget.disabledTextColor,
+                dateItemComponentList: widget.dateItemComponentList,
+                radius: widget.radius,
+                itemMargin: widget.itemMargin,
+              ),
+            );
+          },
+        ),
       ),
     );
   }
